@@ -1,35 +1,41 @@
-// @ts-nocheck
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-// This is a placeholder for your Firebase configuration.
-// For Vercel, you should set these as environment variables in your project settings.
-// For local development, create a .env.local file in your project root.
-//
-// Example .env.local:
-VITE_FIREBASE_API_KEY="AIzaSyCrUqxMATZ67wt_PeTK_3qSc9K6mbwmrPs"
-VITE_FIREBASE_AUTH_DOMAIN="tercih-yonetim-sistemi.firebaseapp.com"
-VITE_FIREBASE_PROJECT_ID="tercih-yonetim-sistemi"
-VITE_FIREBASE_STORAGE_BUCKET="tercih-yonetim-sistemi.firebasestorage.app"
-VITE_FIREBASE_MESSAGING_SENDER_ID="1017666250456"
-VITE_FIREBASE_APP_ID="1:1017666250456:web:569fd589d96c7e8bc1d9ad"
-VITE_FIREBASE_MEASUREMENT_ID="G-KP5HB0LN9M"
-
+// ----------------------------------------------------------------
+// UYARI: Lütfen aşağıdaki yer tutucu değerleri kendi Firebase
+// projenizin bilgileriyle güncelleyin.
+// Firebase konsolunuzda "Proje Ayarları" -> "Genel" sekmesinde
+// bu bilgileri bulabilirsiniz.
+// ----------------------------------------------------------------
 export const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyCrUqxMATZ67wt_PeTK_3qSc9K6mbwmrPs",
+  authDomain: "tercih-yonetim-sistemi.firebaseapp.com",
+  projectId: "tercih-yonetim-sistemi",
+  storageBucket: "tercih-yonetim-sistemi.firebasestorage.app",
+  messagingSenderId: "1017666250456",
+  appId: "1:1017666250456:web:569fd589d96c7e8bc1d9ad",
+  measurementId: "G-KP5HB0LN9M"
 };
 
-// Initialize Firebase
-let app;
-// Check if Firebase has already been initialized to avoid errors
-if (!firebase.apps.length) {
-  app = firebase.initializeApp(firebaseConfig);
-} else {
-  app = firebase.app(); // if already initialized, use that one
+// Check if any config value is a placeholder before initializing
+const hasPlaceholder = Object.values(firebaseConfig).some(
+  (value) => typeof value === 'string' && value.startsWith('YOUR_')
+);
+
+if (hasPlaceholder) {
+  console.error("Firebase yapılandırması eksik. Lütfen firebaseConfig.ts dosyasını kendi proje bilgilerinizle güncelleyin.");
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = `
+      <div style="padding: 2rem; text-align: center; font-family: sans-serif; background-color: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 0.5rem; margin: 2rem auto; max-width: 600px;">
+        <h1 style="font-size: 1.5rem; font-weight: bold;">Yapılandırma Hatası</h1>
+        <p style="margin-top: 0.5rem;">Uygulama başlatılamadı. Lütfen <code>firebaseConfig.ts</code> dosyasındaki Firebase proje bilgilerini doldurun.</p>
+      </div>
+    `;
+  }
+  throw new Error("Firebase configuration is incomplete. Please update firebaseConfig.ts with your project credentials.");
 }
 
-export const db = firebase.firestore();
+// Initialize Firebase with the modular SDK
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);

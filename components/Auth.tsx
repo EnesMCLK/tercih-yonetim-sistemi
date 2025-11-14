@@ -131,9 +131,22 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
         const sessionKey = await cryptoService.deriveSessionKey(trimmedPassword, salt);
         onAuthSuccess(newUser, sessionKey);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Authentication error:", err);
-      setError("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+      let errorMessage = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+      if (err.code) {
+        switch (err.code) {
+          case 'permission-denied':
+            errorMessage = "Veritabanına erişim izni reddedildi. Lütfen yöneticinizle iletişime geçin.";
+            break;
+          case 'unavailable':
+            errorMessage = "Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.";
+            break;
+          default:
+            errorMessage = `Bir hata oluştu (${err.code}). Lütfen tekrar deneyin.`;
+        }
+      }
+      setError(errorMessage);
     } finally {
       if (document.getElementById('auth-form')) {
           setIsLoading(false);
@@ -183,9 +196,22 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
         const sessionKey = await cryptoService.deriveSessionKey(newPassword.trim(), userForReset.salt);
         onAuthSuccess({ ...userForReset, passwordHash: newPasswordHash }, sessionKey);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Forgot password error:", err);
-      setError("Bir hata oluştu. Lütfen daha sonra tekrar deneyin.");
+       let errorMessage = "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+       if (err.code) {
+        switch (err.code) {
+          case 'permission-denied':
+            errorMessage = "Veritabanına erişim izni reddedildi. Lütfen yöneticinizle iletişime geçin.";
+            break;
+          case 'unavailable':
+             errorMessage = "Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.";
+            break;
+          default:
+             errorMessage = `Bir hata oluştu (${err.code}). Lütfen tekrar deneyin.`;
+        }
+      }
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
