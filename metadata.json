@@ -1,0 +1,5 @@
+{
+  "name": "Tercih Yönetim Sistemi",
+  "description": "A web application for users to log in with a registration number and manage a list of their preferred locations. User data is stored locally in the browser.",
+  "requestFramePermissions": []
+}
