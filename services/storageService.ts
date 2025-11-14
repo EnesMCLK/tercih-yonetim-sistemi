@@ -1,81 +1,42 @@
 import type { User } from '../types';
+import { firebaseService } from './firebaseService';
 
-const USERS_KEY = 'TYS_users';
-const PREFERENCES_KEY = 'TYS_preferences';
-
-// Helper functions to interact with localStorage
-const getUsersFromStorage = (): Record<string, User> => {
-  try {
-    const usersJson = localStorage.getItem(USERS_KEY);
-    return usersJson ? JSON.parse(usersJson) : {};
-  } catch (e) {
-    console.error("Failed to parse users from localStorage", e);
-    return {};
-  }
-};
-
-const saveUsersToStorage = (users: Record<string, User>): void => {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-};
-
-const getPreferencesFromStorage = (): Record<string, string> => {
-  try {
-    const prefsJson = localStorage.getItem(PREFERENCES_KEY);
-    return prefsJson ? JSON.parse(prefsJson) : {};
-  } catch (e) {
-    console.error("Failed to parse preferences from localStorage", e);
-    return {};
-  }
-};
-
-const savePreferencesToStorage = (prefs: Record<string, string>): void => {
-  localStorage.setItem(PREFERENCES_KEY, JSON.stringify(prefs));
-};
-
-
+// This service now acts as a facade, delegating all storage operations to firebaseService.
+// This decouples the application components from the specific data storage implementation (Firebase),
+// allowing for easier maintenance and testing.
 export const storageService = {
   /**
-   * Fetches a user object from localStorage by sicilNo.
+   * Fetches a user object from Firestore by sicilNo.
    */
   getUser: async (sicilNo: string): Promise<User | null> => {
-    const users = getUsersFromStorage();
-    return users[sicilNo] || null;
+    return firebaseService.getUser(sicilNo);
   },
 
   /**
-   * Creates a new user in localStorage.
+   * Creates a new user in Firestore.
    */
   createUser: async (user: User): Promise<void> => {
-    const users = getUsersFromStorage();
-    users[user.sicilNo] = user;
-    saveUsersToStorage(users);
+    return firebaseService.createUser(user);
   },
 
   /**
-   * Updates a user's password hash in localStorage.
+   * Updates a user's password hash in Firestore.
    */
   updateUserPassword: async (sicilNo: string, newPasswordHash: string): Promise<void> => {
-    const users = getUsersFromStorage();
-    if (users[sicilNo]) {
-      users[sicilNo].passwordHash = newPasswordHash;
-      saveUsersToStorage(users);
-    }
+    return firebaseService.updateUserPassword(sicilNo, newPasswordHash);
   },
 
   /**
-   * Fetches the encrypted preferences for a user from localStorage.
+   * Fetches the encrypted preferences for a user from Firestore.
    */
   getPreferences: async (sicilNo: string): Promise<string | null> => {
-    const allPrefs = getPreferencesFromStorage();
-    return allPrefs[sicilNo] || null;
+    return firebaseService.getPreferences(sicilNo);
   },
   
   /**
-   * Saves the encrypted preferences for a user to localStorage.
+   * Saves the encrypted preferences for a user to Firestore.
    */
   savePreferences: async (sicilNo: string, encryptedData: string): Promise<void> => {
-    const allPrefs = getPreferencesFromStorage();
-    allPrefs[sicilNo] = encryptedData;
-    savePreferencesToStorage(allPrefs);
+    return firebaseService.savePreferences(sicilNo, encryptedData);
   },
 };

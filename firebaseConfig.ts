@@ -1,28 +1,35 @@
 // @ts-nocheck
 
 // This is a placeholder for your Firebase configuration.
-// 1. Go to your Firebase project console.
-// 2. In your project's settings, find the "General" tab.
-// 3. Under "Your apps", select the web app you created.
-// 4. Find and copy the Firebase configuration object.
-// 5. Paste it here to replace the placeholder object below.
+// For Vercel, you should set these as environment variables in your project settings.
+// For local development, create a .env.local file in your project root.
+//
+// Example .env.local:
+VITE_FIREBASE_API_KEY="AIzaSyCrUqxMATZ67wt_PeTK_3qSc9K6mbwmrPs"
+VITE_FIREBASE_AUTH_DOMAIN="tercih-yonetim-sistemi.firebaseapp.com"
+VITE_FIREBASE_PROJECT_ID="tercih-yonetim-sistemi"
+VITE_FIREBASE_STORAGE_BUCKET="tercih-yonetim-sistemi.firebasestorage.app"
+VITE_FIREBASE_MESSAGING_SENDER_ID="1017666250456"
+VITE_FIREBASE_APP_ID="1:1017666250456:web:569fd589d96c7e8bc1d9ad"
+VITE_FIREBASE_MEASUREMENT_ID="G-KP5HB0LN9M"
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCrUqxMATZ67wt_PeTK_3qSc9K6mbwmrPs",
-  authDomain: "tercih-yonetim-sistemi.firebaseapp.com",
-  projectId: "tercih-yonetim-sistemi",
-  storageBucket: "tercih-yonetim-sistemi.firebasestorage.app",
-  messagingSenderId: "1017666250456",
-  appId: "1:1017666250456:web:569fd589d96c7e8bc1d9ad",
-  measurementId: "G-KP5HB0LN9M"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
 let app;
+// Check if Firebase has already been initialized to avoid errors
 if (!firebase.apps.length) {
   app = firebase.initializeApp(firebaseConfig);
 } else {
-  app = firebase.app();
+  app = firebase.app(); // if already initialized, use that one
 }
 
 export const db = firebase.firestore();
